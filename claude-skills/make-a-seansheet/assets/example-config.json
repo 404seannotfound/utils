@@ -1,0 +1,182 @@
+{
+  "_comment": "Canonical example — regenerates the redbotbluebot setup-worksheet.html. Use as a starting point for new projects; copy and edit.",
+
+  "project": {
+    "name": "redbotbluebot",
+    "title": "redbot bluebot — setup worksheet",
+    "wordmark_left": "redbot",
+    "wordmark_right": "bluebot",
+    "subtitle": "setup worksheet",
+    "page_title": "External credentials, gathered in one go.",
+    "preview_url": "https://redbotbluebot.pages.dev",
+    "storage_key": "rbbb-setup",
+    "wrangler_project": "redbotbluebot",
+    "dev_vars_path": "/Users/seansp/git/redbotbluebot/.dev.vars",
+    "repo_path": "~/git/redbotbluebot/"
+  },
+
+  "cards": [
+    {
+      "step": "Step 1",
+      "title": "Auth basics",
+      "subtitle": "No external service needed — generate these locally.",
+      "fields": [
+        {
+          "key": "BETTER_AUTH_SECRET",
+          "required": true,
+          "placeholder": "hex string, 64 chars",
+          "validate": "^[a-f0-9]{64}$",
+          "hint": "Random 256-bit secret for BetterAuth session signing. Click Generate to fill it client-side via <code>crypto.getRandomValues</code>.",
+          "actions": [{ "kind": "generate-hex", "bytes": 32, "label": "Generate" }]
+        },
+        {
+          "key": "BETTER_AUTH_URL",
+          "required": true,
+          "default": "https://redbotbluebot.pages.dev",
+          "validate": "^https://[a-z0-9.-]+(:\\d+)?$",
+          "hint": "Where BetterAuth callback URLs are built against. <strong>The default value above is correct right now</strong> — don't change it. Only switch to <code>https://www.redbotbluebot.com</code> AFTER the custom domain has been wired up in Cloudflare Pages.",
+          "actions": [{ "kind": "test-fetch", "label": "🌐 Ping" }]
+        }
+      ]
+    },
+
+    {
+      "step": "Step 2",
+      "title": "GitHub OAuth app",
+      "subtitle": "A fresh OAuth app (don't reuse codebackstory's — we need full <code>repo</code> scope here).",
+      "links": [
+        { "label": "Open GitHub → new OAuth app", "url": "https://github.com/settings/applications/new" }
+      ],
+      "instructions": [
+        "<strong>Application name</strong>: <code>redbot bluebot — security audit</code>",
+        "<strong>Homepage URL</strong>: <code>https://www.redbotbluebot.com</code>",
+        "<strong>Authorization callback URL</strong>: <code>https://www.redbotbluebot.com/api/auth/callback/github</code>",
+        "Click <strong>Register application</strong>.",
+        "On the next page, the <strong>Client ID</strong> is visible. Click <strong>Generate a new client secret</strong>, copy it once (you won't see it again)."
+      ],
+      "fields": [
+        {
+          "key": "GITHUB_CLIENT_ID",
+          "required": true,
+          "placeholder": "Ov23li...",
+          "validate": "^Ov23li[A-Za-z0-9]+$",
+          "hint": "Test opens GitHub's authorize page in a new tab. If GitHub shows a consent screen, the client id is real. If it shows an error, it's not.",
+          "actions": [{ "kind": "test-github-oauth", "label": "🔍 Test OAuth flow" }]
+        },
+        {
+          "key": "GITHUB_CLIENT_SECRET",
+          "required": true,
+          "secret": true,
+          "placeholder": "hex string, 40 chars",
+          "validate": "^[a-f0-9]{40}$",
+          "hint": "Hidden input — paste safely. Can't be live-tested without a real OAuth round-trip; format-check only."
+        }
+      ]
+    },
+
+    {
+      "step": "Step 3",
+      "title": "Stripe (products + keys)",
+      "subtitle": "Two products, three required secrets. Webhook secret comes later (after first deploy on the custom domain).",
+      "links": [
+        { "label": "Stripe → API keys", "url": "https://dashboard.stripe.com/apikeys" }
+      ],
+      "instructions": [
+        "Copy the <strong>Publishable key</strong> (<code>pk_live_...</code>) and the <strong>Secret key</strong> (<code>sk_live_...</code>). Use live keys for production; test keys for staging."
+      ],
+      "fields": [
+        {
+          "key": "STRIPE_PUBLISHABLE_KEY",
+          "required": true,
+          "placeholder": "pk_live_...",
+          "validate": "^pk_(live|test)_[A-Za-z0-9]+$"
+        },
+        {
+          "key": "STRIPE_SECRET_KEY",
+          "required": true,
+          "secret": true,
+          "placeholder": "sk_live_...",
+          "validate": "^sk_(live|test)_[A-Za-z0-9]+$",
+          "hint": "Cross-field check below auto-flags any test/live mismatch with the publishable key."
+        },
+        {
+          "key": "STRIPE_PRICE_ONESHOT",
+          "required": true,
+          "placeholder": "price_...",
+          "validate": "^price_[A-Za-z0-9]+$",
+          "hint": "From the Stripe one-shot product: <a href=\"https://dashboard.stripe.com/products/create\" target=\"_blank\" rel=\"noopener\">Stripe → new product</a>, name <code>redbot bluebot — one-shot audit</code>, One time, <code>$99.00 USD</code>. Copy the resulting <code>price_</code> id."
+        },
+        {
+          "key": "STRIPE_PRICE_CONTINUOUS",
+          "required": true,
+          "placeholder": "price_...",
+          "validate": "^price_[A-Za-z0-9]+$",
+          "hint": "From the Stripe continuous product: name <code>redbot bluebot — continuous audit</code>, Recurring · Monthly, <code>$499.00 USD</code>. Copy the resulting <code>price_</code> id."
+        },
+        {
+          "key": "STRIPE_WEBHOOK_SECRET",
+          "required": false,
+          "secret": true,
+          "placeholder": "whsec_...",
+          "validate": "^whsec_[A-Za-z0-9]+$",
+          "hint": "Defer until custom domain is wired. After first prod deploy: <a href=\"https://dashboard.stripe.com/webhooks/create\" target=\"_blank\" rel=\"noopener\">Stripe → Webhooks → Add endpoint</a>, point at <code>https://www.redbotbluebot.com/api/stripe/webhook</code>."
+        }
+      ]
+    },
+
+    {
+      "step": "Step 4",
+      "title": "LLM providers (Anthropic + xAI)",
+      "subtitle": "Reuse the codebackstory keys if convenient — same SaaSaaS LLC entity.",
+      "links": [
+        { "label": "Anthropic → API keys", "url": "https://console.anthropic.com/settings/keys" },
+        { "label": "xAI → API keys", "url": "https://console.x.ai/team/default/api-keys" }
+      ],
+      "instructions": [
+        "Anthropic: Create Key named <code>redbot bluebot</code>. <strong>Confirm Opus access is enabled</strong> — the audit pipeline uses <code>claude-opus-4-5</code>, not Sonnet.",
+        "xAI: Create API key named <code>redbot bluebot</code>."
+      ],
+      "fields": [
+        {
+          "key": "ANTHROPIC_API_KEY",
+          "required": true,
+          "secret": true,
+          "placeholder": "sk-ant-api03-...",
+          "validate": "^sk-ant-(api03|admin01)-[A-Za-z0-9_\\-]+$",
+          "hint": "Format-checked only. Anthropic's API blocks browser-origin secret-key calls (CORS), so the key can't be live-tested from this page."
+        },
+        {
+          "key": "XAI_API_KEY",
+          "required": true,
+          "secret": true,
+          "placeholder": "xai-...",
+          "validate": "^xai-[A-Za-z0-9]+$"
+        }
+      ]
+    },
+
+    {
+      "step": "Step 5",
+      "title": "Resend (email)",
+      "subtitle": "Transactional email for audit-complete notices, critical-finding alerts, weekly digests.",
+      "links": [
+        { "label": "Resend → sign up (skip if you have an account)", "url": "https://resend.com/signup" },
+        { "label": "Resend → Domains", "url": "https://resend.com/domains" },
+        { "label": "Resend → API Keys", "url": "https://resend.com/api-keys" }
+      ],
+      "instructions": [
+        "Add <code>redbotbluebot.com</code> as a sending domain. Resend returns DKIM/SPF/return-path records — add them in <a href=\"https://dash.cloudflare.com/?to=/:account/redbotbluebot.com/dns\" target=\"_blank\" rel=\"noopener\">Cloudflare DNS</a> (once the domain is added there).",
+        "Create an API key named <code>redbot bluebot</code>. Permission: <code>Sending access</code> only (NOT full access — defense in depth)."
+      ],
+      "fields": [
+        {
+          "key": "RESEND_API_KEY",
+          "required": true,
+          "secret": true,
+          "placeholder": "re_...",
+          "validate": "^re_[A-Za-z0-9_]+$"
+        }
+      ]
+    }
+  ]
+}

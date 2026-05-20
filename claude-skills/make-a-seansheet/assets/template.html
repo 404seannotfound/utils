@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #0F0F12; --bg-elevated: #1A1A20; --bg-deeper: #07070A;
+  --ink: #F5F2EB; --ink-soft: #C2BFB8; --muted: #8A8884;
+  --rule: #2A2A33;
+  --red: #FF6B58; --red-soft: #E54A35;
+  --blue: #5BA4E8; --blue-soft: #2A78C2;
+  --yellow: #F5C84B; --green: #5BC07A; --green-soft: #3A9858;
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body); color: var(--ink); background: var(--bg);
+  background-image: radial-gradient(rgba(255,255,255,0.018) 1px, transparent 1.4px),
+                    radial-gradient(rgba(91,164,232,0.012) 1px, transparent 1.2px);
+  background-size: 32px 32px, 18px 18px; line-height: 1.55;
+  min-height: 100vh; padding-bottom: 100px;
+}
+.container { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+/* ── Header ────────────────────────────────────────────── */
+header.hero {
+  background: var(--bg-deeper); border-bottom: 1px solid var(--rule);
+  padding: 28px 0 26px; margin-bottom: 28px; position: relative; overflow: hidden;
+}
+header.hero::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,107,88,0.10) 0%, rgba(255,107,88,0.10) 50%, rgba(91,164,232,0.10) 50%, rgba(91,164,232,0.10) 100%);
+  pointer-events: none;
+}
+.lockup { display: inline-flex; align-items: center; gap: 12px; position: relative; text-decoration: none; color: var(--ink); }
+.lockup svg { display: block; }
+.wordmark { font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; letter-spacing: -0.02em; line-height: 1; }
+.wordmark .r { color: var(--red); }
+.wordmark .b { color: var(--blue); }
+.subtitle {
+  font-family: var(--font-display); font-weight: 600; font-size: 0.78rem;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-top: 4px;
+}
+h1.page-title {
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem); letter-spacing: -0.025em;
+  margin: 18px 0 8px; line-height: 1.1; position: relative;
+}
+.page-lead { color: var(--ink-soft); font-size: 1.02rem; max-width: 700px; position: relative; }
+
+/* ── Progress ─────────────────────────────────────────── */
+.progress {
+  margin: 22px 0 0; padding: 14px 18px;
+  background: var(--bg-elevated); border: 1px solid var(--rule);
+  border-radius: 8px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  position: relative;
+}
+.progress__count { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
+.progress__count .done { color: var(--green); }
+.progress__count .total { color: var(--ink-soft); }
+.progress__bar {
+  flex: 1 1 auto; height: 8px; background: var(--bg); border-radius: 999px;
+  overflow: hidden; border: 1px solid var(--rule); min-width: 180px;
+}
+.progress__fill {
+  height: 100%; background: linear-gradient(90deg, var(--red) 0%, var(--blue) 100%);
+  transition: width 0.3s ease-out; width: 0;
+}
+.progress__hint { color: var(--muted); font-size: 0.86rem; font-style: italic; }
+
+/* ── Cards ────────────────────────────────────────────── */
+.card {
+  margin-top: 22px; background: var(--bg-elevated);
+  border: 1px solid var(--rule); border-radius: 12px; padding: 22px 22px 20px;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.4);
+  transition: border-color 0.25s ease, background 0.25s ease;
+}
+.card--complete {
+  border-color: var(--green);
+  background:
+    linear-gradient(135deg, var(--bg-elevated) 0%, rgba(91, 192, 122, 0.06) 100%);
+  box-shadow: 0 2px 0 rgba(91,192,122,0.25), 0 8px 24px rgba(0,0,0,0.4);
+}
+.card--complete .card__num { color: var(--green); }
+.card--complete .card__title::after {
+  content: "  ✓"; color: var(--green); font-weight: 700;
+}
+.card__head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
+.card__num {
+  font-family: var(--font-display); font-weight: 700; font-size: 0.72rem;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted);
+  transition: color 0.25s ease;
+}
+.card__title {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.35rem;
+  letter-spacing: -0.02em; color: var(--ink);
+}
+.card__sub { color: var(--muted); font-size: 0.92rem; font-style: italic; margin-top: 2px; margin-bottom: 14px; }
+
+/* ── "Go" links: label on top, URL below, both clickable ─── */
+.go {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 3px;
+  padding: 10px 14px; border: 1.5px solid var(--rule); border-radius: 6px;
+  text-decoration: none; color: var(--ink); background: var(--bg);
+  margin: 4px 0 16px; transition: all 0.15s ease; max-width: 100%;
+}
+.go:hover { border-color: var(--blue); color: var(--blue); }
+.go:hover .go__url { color: var(--blue-soft); }
+.go__label {
+  font-family: var(--font-display); font-weight: 600; font-size: 0.95rem;
+}
+.go__label::after { content: " ↗"; opacity: 0.55; }
+.go__url {
+  font-family: var(--font-mono); font-weight: 400;
+  font-size: 0.74rem; color: var(--muted);
+  word-break: break-all; line-height: 1.3;
+}
+
+/* ── Card body content ────────────────────────────────── */
+.card ol { padding-left: 22px; margin: 8px 0 16px; }
+.card ol li { margin: 4px 0; color: var(--ink-soft); }
+.card ol li strong { color: var(--ink); }
+.card ol li code,
+.card p code,
+.card .hint code {
+  font-family: var(--font-mono); font-size: 0.86em;
+  background: var(--bg); border: 1px solid var(--rule);
+  color: var(--yellow); padding: 1px 6px; border-radius: 3px;
+}
+.card ol li a, .card p a { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
+.card ol li a:hover, .card p a:hover { color: var(--blue-soft); }
+
+/* Tiny inline copy buttons that get JS-injected next to every <code>
+   block inside a card. Click → copy the code's text to clipboard, flash
+   green for a beat, restore. Cheaper than the user select-dragging
+   each value out of a <code> tag with their mouse. */
+.copy-inline {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; margin-left: 6px; padding: 0;
+  background: var(--bg); border: 1px solid var(--rule);
+  color: var(--muted); border-radius: 4px;
+  cursor: pointer; vertical-align: -3px;
+  transition: all 0.12s ease;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 0.72rem; line-height: 1;
+}
+.copy-inline:hover { color: var(--ink); border-color: var(--ink-soft); background: var(--bg-elevated); }
+.copy-inline:active { transform: translateY(1px); }
+.copy-inline svg { display: block; pointer-events: none; }
+.copy-inline--ok {
+  color: var(--green); border-color: var(--green-soft);
+  background: rgba(91, 192, 122, 0.16);
+}
+
+/* ── Form fields ──────────────────────────────────────── */
+.field { margin: 12px 0; }
+.field__label {
+  display: block; font-family: var(--font-mono); font-weight: 500;
+  font-size: 0.82rem; color: var(--muted); letter-spacing: 0.04em;
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.field__label .req { color: var(--red); margin-left: 4px; }
+.field__row { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; }
+.field__input {
+  flex: 1 1 auto;
+  font-family: var(--font-mono); font-size: 0.92rem;
+  padding: 9px 12px; background: var(--bg); color: var(--ink);
+  border: 1.5px solid var(--rule); border-radius: 6px; min-width: 220px;
+  transition: border-color 0.15s ease;
+}
+.field__input:focus { outline: none; border-color: var(--blue); }
+.field__input--valid { border-color: var(--green); }
+.field__hint { font-size: 0.78rem; color: var(--muted); margin-top: 4px; font-style: italic; }
+.field__btn {
+  font-family: var(--font-display); font-weight: 600; font-size: 0.82rem;
+  padding: 0 12px; background: var(--bg); color: var(--ink-soft);
+  border: 1.5px solid var(--rule); border-radius: 6px; cursor: pointer;
+  transition: all 0.15s ease; white-space: nowrap;
+}
+.field__btn:hover { color: var(--ink); border-color: var(--ink-soft); }
+.field__btn:active { transform: translateY(1px); }
+.field__btn--accent { background: var(--blue); color: var(--bg); border-color: var(--blue); }
+.field__btn--accent:hover { background: var(--blue-soft); color: var(--bg); border-color: var(--blue-soft); }
+.field__test-result {
+  display: inline-flex; align-items: center; padding: 4px 10px;
+  font-family: var(--font-display); font-weight: 600; font-size: 0.78rem;
+  border-radius: 4px; margin-top: 6px;
+}
+.field__test-result--ok { background: rgba(91,192,122,0.16); color: var(--green); border: 1px solid var(--green-soft); }
+.field__test-result--fail { background: rgba(255,107,88,0.16); color: var(--red); border: 1px solid var(--red-soft); }
+.field__test-result--pending { background: var(--bg); color: var(--muted); border: 1px solid var(--rule); }
+.field__test-result:empty { display: none; }
+
+/* ── Warnings panel ───────────────────────────────────── */
+.warnings__list { list-style: none; padding: 0; margin: 6px 0 0; }
+.warnings__list li {
+  padding: 9px 14px; border-radius: 6px; margin-bottom: 8px;
+  font-size: 0.93rem; line-height: 1.45;
+}
+.warnings__warn {
+  background: rgba(245, 200, 75, 0.10); border-left: 3px solid var(--yellow);
+  color: var(--ink);
+}
+.warnings__warn strong { color: var(--yellow); }
+.warnings__err {
+  background: rgba(255, 107, 88, 0.10); border-left: 3px solid var(--red);
+  color: var(--ink);
+}
+.warnings__err strong { color: var(--red); }
+.warnings__ok {
+  background: rgba(91, 192, 122, 0.06); border-left: 3px solid var(--green);
+  color: var(--green); font-style: italic;
+}
+
+/* ── Footer actions ───────────────────────────────────── */
+.actions {
+  margin-top: 28px; padding: 22px;
+  background: var(--bg-deeper); border: 1px solid var(--rule); border-radius: 12px;
+}
+.actions__title { font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; margin-bottom: 12px; }
+.actions__lead { color: var(--ink-soft); margin-bottom: 18px; }
+.actions__grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.actions__btn {
+  display: flex; flex-direction: column; gap: 4px; align-items: flex-start;
+  font-family: var(--font-display); font-weight: 600;
+  padding: 12px 16px; background: var(--bg-elevated); color: var(--ink);
+  border: 1.5px solid var(--rule); border-radius: 8px;
+  cursor: pointer; text-decoration: none; transition: all 0.15s ease;
+  font-size: 0.95rem; text-align: left;
+}
+.actions__btn:hover { border-color: var(--blue); }
+.actions__btn small {
+  display: block; font-family: var(--font-body); font-weight: 400;
+  font-size: 0.78rem; color: var(--muted); line-height: 1.4;
+}
+.actions__btn--red:hover { border-color: var(--red); }
+
+/* ── Toast ────────────────────────────────────────────── */
+#toast {
+  position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(120%);
+  background: var(--green); color: var(--bg);
+  font-family: var(--font-display); font-weight: 700; letter-spacing: 0.02em;
+  padding: 10px 18px; border-radius: 6px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+  transition: transform 0.25s ease-out;
+  z-index: 999;
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+#toast.toast--err { background: var(--red); }
+
+/* ── Misc ─────────────────────────────────────────────── */
+.hint { color: var(--muted); font-size: 0.86rem; font-style: italic; margin-top: 6px; }
+details { margin-top: 12px; }
+details summary { cursor: pointer; color: var(--blue); font-size: 0.86rem; padding: 4px 0; user-select: none; }
+details summary:hover { color: var(--blue-soft); }
+details pre {
+  font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.5;
+  background: var(--bg); border: 1px solid var(--rule); border-radius: 6px;
+  padding: 12px 14px; margin-top: 8px; overflow-x: auto;
+  white-space: pre; color: var(--ink-soft);
+}
+.divider { height: 1px; background: var(--rule); border: none; margin: 14px 0 12px; }
+</style>
+</head>
+
+<body>
+
+<header class="hero">
+  <div class="container">
+    <a class="lockup" href="{{PREVIEW_URL}}" target="_blank" rel="noopener">
+      {{LOGOMARK_SVG}}
+      <div>
+        <div class="wordmark"><span class="r">{{WORDMARK_LEFT}}</span> <span class="b">{{WORDMARK_RIGHT}}</span></div>
+        <div class="subtitle">{{SUBTITLE}}</div>
+      </div>
+    </a>
+    <h1 class="page-title">{{PAGE_TITLE}}</h1>
+    <p class="page-lead">
+      Visit each service, paste what you find here, hit export. Steps light up green when they're complete.
+      No data leaves this page — everything stays in your browser's localStorage so you can close it and come back later.
+    </p>
+    <div class="progress">
+      <div class="progress__count">
+        <span id="progress-done" class="done">0</span><span class="total">/<span id="progress-total">0</span></span>
+        <span style="color: var(--muted); font-weight: 400; font-size: 0.85rem; margin-left: 6px;">secrets filled</span>
+      </div>
+      <div class="progress__bar"><div id="progress-fill" class="progress__fill"></div></div>
+      <span class="progress__hint">refresh-safe — your values persist locally</span>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+{{CARDS_HTML}}
+
+<!-- ── Sanity checks (cross-field warnings) ─────────────────────────── -->
+<section class="card" data-card-id="checks">
+  <div class="card__head">
+    <span class="card__num">Sanity checks</span>
+    <h2 class="card__title">Cross-field warnings</h2>
+  </div>
+  <p class="card__sub">Live. Updates as you type.</p>
+  <ul class="warnings__list" id="warnings-list">
+    <li class="warnings__ok">Nothing obviously wrong yet. Fill more fields to get more checks.</li>
+  </ul>
+</section>
+
+<!-- ── Actions ─────────────────────────────────────────────────────── -->
+<section class="actions">
+  <h2 class="actions__title">Export</h2>
+  <p class="actions__lead">Once you've filled what you have (you can come back for the rest), pick your delivery vehicle:</p>
+
+  <div class="actions__grid">
+    <button class="actions__btn" data-action="copy-env">
+      📋 Copy .dev.vars to clipboard
+      <small>Paste into VSCode or your editor of choice</small>
+    </button>
+
+    <button class="actions__btn" data-action="download-env">
+      ⬇ Download .dev.vars
+      <small>Save into <code style="font-size:0.78rem">{{REPO_PATH}}</code></small>
+    </button>
+
+    <button class="actions__btn actions__btn--red" data-action="download-script">
+      ⬇ Download set-secrets.sh
+      <small>Push every filled secret to Cloudflare in one shell run</small>
+    </button>
+
+    <a class="actions__btn" href="vscode://file{{VSCODE_DEV_VARS_PATH}}">
+      ↗ Open .dev.vars in VSCode
+      <small>VSCode creates the file if it doesn't exist; then paste the clipboard</small>
+    </a>
+
+    <button class="actions__btn" data-action="copy-script">
+      📋 Copy set-secrets.sh to clipboard
+      <small>Or copy the script and paste into a terminal</small>
+    </button>
+
+    <button class="actions__btn" data-action="clear" style="border-color: var(--red);">
+      🗑 Clear all stored values
+      <small>Reset and start over (irreversible)</small>
+    </button>
+  </div>
+
+  <details>
+    <summary>Show me the .dev.vars content (what gets exported)</summary>
+    <pre id="env-preview">(fill in some fields above to see the export)</pre>
+  </details>
+
+  <details>
+    <summary>Show me the set-secrets.sh script</summary>
+    <pre id="script-preview">(fill in some fields above to see the script)</pre>
+  </details>
+</section>
+
+</main>
+
+<div id="toast"></div>
+
+<script>
+'use strict';
+
+/**
+ * setup-worksheet.html — local single-page wizard for redbot bluebot setup.
+ *
+ *   - Persists every input to localStorage under "rbbb-setup".
+ *   - Validates known-format secrets against regex from data-validate=.
+ *   - Cards turn green when all their required fields are filled + valid.
+ *   - Cross-field warnings recompute on every change (Stripe mode mismatch,
+ *     duplicate price ids, BETTER_AUTH_URL/callback mismatch).
+ *   - Per-field "test" buttons where a safe browser-side check exists:
+ *       BETTER_AUTH_URL → no-cors fetch (does it resolve at all?)
+ *       GITHUB_CLIENT_ID → opens GitHub's authorize URL in a new tab.
+ *   - Exports four ways: copy .dev.vars, download .dev.vars,
+ *     copy set-secrets.sh, download set-secrets.sh. Plus a vscode://
+ *     link to open the .dev.vars file at the expected path.
+ *
+ * Nothing leaves the page (except the "Ping" test which fetches the URL the
+ * user supplied, and the OAuth-test which opens a new tab to github.com).
+ * No keys are sent to any third party.
+ */
+
+const STORAGE_KEY = '{{STORAGE_KEY}}';
+
+// ── State ────────────────────────────────────────────────────
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch { return {}; }
+}
+function saveState(s) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+}
+const state = loadState();
+
+const fields = Array.from(document.querySelectorAll('[data-secret]'));
+const cards = Array.from(document.querySelectorAll('[data-card-id]'));
+const requiredCount = fields.filter(f => !f.dataset.optional).length;
+document.getElementById('progress-total').textContent = requiredCount;
+
+// Hydrate inputs from state and wire change handlers.
+fields.forEach(f => {
+  const key = f.dataset.secret;
+  const input = f.querySelector('input');
+  if (!input) return;
+  if (state[key] != null) input.value = state[key];
+
+  input.addEventListener('input', () => {
+    state[key] = input.value;
+    saveState(state);
+    validateField(f);
+    refreshUI();
+  });
+
+  validateField(f);
+});
+
+// ── Validation + completion ──────────────────────────────────
+function validateField(field) {
+  const input = field.querySelector('input');
+  if (!input) return false;
+  const re = input.dataset.validate;
+  const filled = input.value.trim().length > 0;
+  const valid = !re || (filled && new RegExp(re).test(input.value.trim()));
+  input.classList.toggle('field__input--valid', filled && valid);
+  return filled && valid;
+}
+
+function isFieldComplete(field) {
+  if (field.dataset.optional) return true;
+  return validateField(field);
+}
+
+function refreshUI() {
+  updateProgress();
+  updateCardCompletion();
+  updateWarnings();
+  updatePreviews();
+}
+
+function updateProgress() {
+  const done = fields.filter(f => {
+    if (f.dataset.optional) return false;
+    return validateField(f);
+  }).length;
+  document.getElementById('progress-done').textContent = done;
+  const pct = requiredCount === 0 ? 0 : Math.round((done / requiredCount) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+function updateCardCompletion() {
+  cards.forEach(card => {
+    const cardFields = Array.from(card.querySelectorAll('[data-secret]'));
+    if (cardFields.length === 0) return;
+    const allDone = cardFields.every(isFieldComplete);
+    card.classList.toggle('card--complete', allDone);
+  });
+}
+
+// ── Cross-field warnings ─────────────────────────────────────
+function updateWarnings() {
+  const warnings = [];
+
+  const pubKey = (state.STRIPE_PUBLISHABLE_KEY ?? '').trim();
+  const secKey = (state.STRIPE_SECRET_KEY ?? '').trim();
+  if (pubKey && secKey) {
+    const pubMode = pubKey.startsWith('pk_live_') ? 'live' : pubKey.startsWith('pk_test_') ? 'test' : null;
+    const secMode = secKey.startsWith('sk_live_') ? 'live' : secKey.startsWith('sk_test_') ? 'test' : null;
+    if (pubMode && secMode && pubMode !== secMode) {
+      warnings.push({
+        level: 'err',
+        msg: '<strong>Stripe mode mismatch</strong> — publishable key is <code>' + pubMode + '</code> but secret key is <code>' + secMode + '</code>. Charges will fail. Pick one mode and use it for both.'
+      });
+    }
+  }
+
+  const p1 = (state.STRIPE_PRICE_ONESHOT ?? '').trim();
+  const p2 = (state.STRIPE_PRICE_CONTINUOUS ?? '').trim();
+  if (p1 && p2 && p1 === p2) {
+    warnings.push({
+      level: 'warn',
+      msg: '<strong>Both Stripe price IDs are identical.</strong> Did you paste the same one twice? One-shot and continuous should be two separate Stripe prices.'
+    });
+  }
+
+  // (Intentionally NOT warning when BETTER_AUTH_URL is the pages.dev value.
+  // pages.dev is the CORRECT value until the custom domain is wired up.
+  // The hint on the field itself explains; nagging here just confused
+  // users into editing a value that was already correct.)
+
+  // BETTER_AUTH_SECRET length check (regex already enforces; this is a friendlier note)
+  const auth = (state.BETTER_AUTH_SECRET ?? '').trim();
+  if (auth && !/^[a-f0-9]{64}$/.test(auth)) {
+    warnings.push({
+      level: 'err',
+      msg: '<strong>BETTER_AUTH_SECRET must be 64 hex chars</strong> (a 256-bit secret). Click the Generate button to fill a valid one.'
+    });
+  }
+
+  // Stripe price + key mode coherence
+  const priceIsLive = (p1 && !p1.includes('test')) || (p2 && !p2.includes('test'));
+  if (priceIsLive && (pubKey || secKey)) {
+    const inTest = (pubKey && pubKey.startsWith('pk_test_')) || (secKey && secKey.startsWith('sk_test_'));
+    if (inTest) {
+      warnings.push({
+        level: 'warn',
+        msg: '<strong>Test-mode keys with what look like production prices.</strong> Verify your two products were created in the same mode (test/live) as the API keys you pasted.'
+      });
+    }
+  }
+
+  const list = document.getElementById('warnings-list');
+  list.innerHTML = '';
+  if (warnings.length === 0) {
+    const filledCount = fields.filter(validateField).length;
+    const li = document.createElement('li');
+    li.className = 'warnings__ok';
+    li.textContent = filledCount === 0
+      ? 'Nothing obviously wrong yet. Fill more fields to get more checks.'
+      : '✓ All ' + filledCount + ' filled value' + (filledCount === 1 ? '' : 's') + ' pass cross-field checks.';
+    list.appendChild(li);
+  } else {
+    warnings.forEach(w => {
+      const li = document.createElement('li');
+      li.className = w.level === 'err' ? 'warnings__err' : 'warnings__warn';
+      li.innerHTML = w.msg;
+      list.appendChild(li);
+    });
+  }
+}
+
+// ── Embedded tests ───────────────────────────────────────────
+function showTestResult(secretKey, kind, msg) {
+  const el = document.querySelector('[data-test-result="' + secretKey + '"]');
+  if (!el) return;
+  el.className = 'field__test-result field__test-result--' + kind;
+  el.textContent = msg;
+}
+
+// Generic per-field action handlers. Each button carries
+// data-action="..." identifying the action kind, plus data-target="KEY"
+// pointing at the secret it operates on. Multiple buttons of the same
+// kind can coexist — each finds its own target via the dataset.
+//
+// Kinds supported:
+//   test-fetch        — no-cors fetch the URL value; report network OK/fail
+//   test-github-oauth — open GitHub OAuth authorize URL in new tab
+//   generate-hex      — fill the field with N random hex bytes (data-bytes=N)
+
+document.querySelectorAll('[data-action="test-fetch"]').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const target = btn.dataset.target;
+    const url = (state[target] ?? '').trim();
+    if (!url) {
+      showTestResult(target, 'fail', '❌ Enter a URL first');
+      return;
+    }
+    showTestResult(target, 'pending', '… pinging');
+    try {
+      await fetch(url, { mode: 'no-cors', cache: 'no-store', signal: AbortSignal.timeout(8000) });
+      showTestResult(target, 'ok', '✓ Host resolves and responds');
+    } catch (e) {
+      showTestResult(target, 'fail', '❌ Could not reach (' + (e?.name || 'error') + '). Check the URL or your network.');
+    }
+  });
+});
+
+document.querySelectorAll('[data-action="test-github-oauth"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.target;
+    const id = (state[target] ?? '').trim();
+    if (!id) {
+      showTestResult(target, 'fail', '❌ Paste the Client ID first');
+      return;
+    }
+    // Use BETTER_AUTH_URL as the redirect_uri origin if present, else the
+    // project's preview URL baked in at build time.
+    const origin = (state.BETTER_AUTH_URL ?? '{{PREVIEW_URL}}').trim().replace(/\/+$/, '');
+    const redirectUri = origin + '/api/auth/callback/github';
+    const url = 'https://github.com/login/oauth/authorize?client_id=' + encodeURIComponent(id) +
+                '&scope=read:user&redirect_uri=' + encodeURIComponent(redirectUri);
+    window.open(url, '_blank', 'noopener');
+    showTestResult(target, 'pending', '↗ Opened in new tab — verify GitHub shows a consent screen');
+  });
+});
+
+document.querySelectorAll('[data-action="generate-hex"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.target;
+    const numBytes = parseInt(btn.dataset.bytes || '32', 10);
+    const buf = new Uint8Array(numBytes);
+    crypto.getRandomValues(buf);
+    const hex = Array.from(buf, b => b.toString(16).padStart(2, '0')).join('');
+    const field = document.querySelector('[data-secret="' + target + '"]');
+    const input = field?.querySelector('input');
+    if (!input) return;
+    input.value = hex;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    toast('Generated fresh ' + (numBytes * 8) + '-bit secret');
+  });
+});
+
+// ── Export builders ──────────────────────────────────────────
+function buildEnv() {
+  const lines = ['# redbot bluebot — local dev secrets', '# Generated by setup-worksheet.html on ' + new Date().toISOString(), ''];
+  fields.forEach(field => {
+    const key = field.dataset.secret;
+    const value = (state[key] ?? '').trim();
+    if (!value) lines.push('# ' + key + '=  # not filled yet');
+    else        lines.push(key + '=' + value);
+  });
+  return lines.join('\n') + '\n';
+}
+
+function buildScript() {
+  const lines = [
+    '#!/bin/bash',
+    '# redbot bluebot — push all filled secrets to Cloudflare Pages.',
+    '# Generated by setup-worksheet.html on ' + new Date().toISOString() + '.',
+    '#',
+    '# Usage:  bash set-secrets.sh',
+    '# Re-run safe: wrangler overwrites existing secrets.',
+    '',
+    'set -e',
+    'PROJECT={{WRANGLER_PROJECT}}',
+    ''
+  ];
+  let filled = 0;
+  fields.forEach(field => {
+    const key = field.dataset.secret;
+    const value = (state[key] ?? '').trim();
+    if (!value) {
+      lines.push('# ' + key + ': skipped (not filled in worksheet)');
+      return;
+    }
+    filled++;
+    lines.push('echo "Setting ' + key + '..."');
+    lines.push('printf "%s" ' + shellQuote(value) + ' | npx wrangler pages secret put ' + key + ' --project-name "$PROJECT"');
+    lines.push('');
+  });
+  if (filled === 0) lines.push('# Nothing to do — no secrets filled in the worksheet yet.');
+  else              lines.push('echo "✓ Set ' + filled + ' secret' + (filled === 1 ? '' : 's') + '."');
+  return lines.join('\n') + '\n';
+}
+
+function shellQuote(s) {
+  return "'" + String(s).replace(/'/g, "'\\''") + "'";
+}
+
+function updatePreviews() {
+  document.getElementById('env-preview').textContent = buildEnv();
+  document.getElementById('script-preview').textContent = buildScript();
+}
+
+// ── Clipboard + download helpers ─────────────────────────────
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.top = '-2000px';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); document.body.removeChild(ta); return true; }
+    catch { document.body.removeChild(ta); return false; }
+  }
+}
+
+function download(filename, content, mime) {
+  const blob = new Blob([content], { type: mime || 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function toast(msg, kind) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  el.classList.toggle('toast--err', kind === 'err');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove('show'), 2600);
+}
+
+document.querySelector('[data-action="copy-env"]').addEventListener('click', async () => {
+  const ok = await copyText(buildEnv());
+  toast(ok ? '.dev.vars copied to clipboard' : 'Copy failed — try Download instead', ok ? null : 'err');
+});
+
+document.querySelector('[data-action="download-env"]').addEventListener('click', () => {
+  download('.dev.vars', buildEnv(), 'text/plain');
+  toast('Downloaded .dev.vars');
+});
+
+document.querySelector('[data-action="copy-script"]').addEventListener('click', async () => {
+  const ok = await copyText(buildScript());
+  toast(ok ? 'set-secrets.sh copied to clipboard' : 'Copy failed — try Download instead', ok ? null : 'err');
+});
+
+document.querySelector('[data-action="download-script"]').addEventListener('click', () => {
+  download('set-secrets.sh', buildScript(), 'text/x-shellscript');
+  toast('Downloaded set-secrets.sh');
+});
+
+document.querySelector('[data-action="clear"]').addEventListener('click', () => {
+  if (!confirm('Clear all stored values? This wipes the worksheet but does NOT touch any Cloudflare secrets you have already set.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  Object.keys(state).forEach(k => delete state[k]);
+  fields.forEach(f => {
+    const input = f.querySelector('input');
+    if (!input) return;
+    if (f.dataset.secret === 'BETTER_AUTH_URL') return; // keep the default
+    input.value = '';
+    validateField(f);
+  });
+  document.querySelectorAll('.field__test-result').forEach(el => { el.className = 'field__test-result'; el.textContent = ''; });
+  refreshUI();
+  toast('Cleared.');
+});
+
+// ── Inline copy buttons next to every <code> inside a card ───
+// Adds a tiny clipboard icon after each <code> block. One click copies
+// the literal text of that code element to the clipboard, so the user
+// can paste it into the GitHub OAuth form / Stripe product name / etc.
+// without select-dragging.
+const COPY_ICON_SVG = '<svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><path fill="currentColor" d="M5 0a1.5 1.5 0 0 0-1.5 1.5V3H2a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2v-1.5h2A1.5 1.5 0 0 0 14.5 11V1.5A1.5 1.5 0 0 0 13 0H5zm0 1h8a.5.5 0 0 1 .5.5V11a.5.5 0 0 1-.5.5h-2V5a2 2 0 0 0-2-2H4.5V1.5A.5.5 0 0 1 5 1zM2 4h7a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/></svg>';
+
+document.querySelectorAll('.card code').forEach(codeEl => {
+  if (codeEl.dataset.enhanced) return;
+  codeEl.dataset.enhanced = '1';
+
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'copy-inline';
+  btn.setAttribute('aria-label', 'Copy: ' + codeEl.textContent);
+  btn.title = 'Copy';
+  btn.innerHTML = COPY_ICON_SVG;
+
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const ok = await copyText(codeEl.textContent);
+    if (!ok) { toast('Copy failed', 'err'); return; }
+    btn.classList.add('copy-inline--ok');
+    btn.innerHTML = '✓';
+    btn.title = 'Copied';
+    setTimeout(() => {
+      btn.classList.remove('copy-inline--ok');
+      btn.innerHTML = COPY_ICON_SVG;
+      btn.title = 'Copy';
+    }, 1100);
+  });
+
+  codeEl.insertAdjacentElement('afterend', btn);
+});
+
+// Initial render
+refreshUI();
+</script>
+
+</body>
+</html>
