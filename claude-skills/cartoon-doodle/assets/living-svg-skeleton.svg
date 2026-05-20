@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" width="1000" height="400"
+     font-family="'Marker Felt', 'Comic Sans MS', 'Chalkboard SE', cursive">
+  <!-- ===========================================================
+       LIVING SVG SKELETON — Sean's house style starter.
+       Copy this file into a project, change the viewBox, and start
+       dropping labeled <g> charm groups into the body.
+
+       Everything below is intentional:
+       - cream paper pattern with speckled dots
+       - three roughness filters (rough / roughBig / roughTiny)
+       - sky + desert gradients (for EVENT-stage blocks)
+       - double frame (jittered outer + ghost inner)
+       - example labeled <g> charm groups (delete or adapt)
+
+       See:
+         ~/.claude/skills/cartoon-doodle/references/svg-patterns.md
+       for filter recipes, charm vocabulary, time-axis math.
+       =========================================================== -->
+
+  <defs>
+    <!-- cream paper background -->
+    <pattern id="paper" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#FBF5E4"/>
+      <circle cx="1" cy="3" r="0.35" fill="#C0B27A" opacity="0.35"/>
+      <circle cx="4" cy="1.5" r="0.25" fill="#A89456" opacity="0.3"/>
+      <circle cx="3" cy="5" r="0.3"  fill="#C0B27A" opacity="0.25"/>
+    </pattern>
+
+    <!-- gradients for EVENT-stage destination blocks -->
+    <linearGradient id="desert" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#F5D58A"/>
+      <stop offset="0.55" stop-color="#E5B266"/>
+      <stop offset="1"   stop-color="#C58341"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#B7D6EF"/>
+      <stop offset="1" stop-color="#F5E0C0"/>
+    </linearGradient>
+
+    <!-- the three roughness filters (vary the seeds!) -->
+    <filter id="rough" x="-2%" y="-2%" width="104%" height="104%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="11"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.6"/>
+    </filter>
+    <filter id="roughBig" x="-2%" y="-2%" width="104%" height="104%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed="9"/>
+      <feDisplacementMap in="SourceGraphic" scale="2.6"/>
+    </filter>
+    <filter id="roughTiny" x="-2%" y="-2%" width="104%" height="104%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="0.8"/>
+    </filter>
+  </defs>
+
+  <!-- ====== paper + double frame ====== -->
+  <rect width="100%" height="100%" fill="url(#paper)"/>
+  <rect x="6" y="6" width="988" height="388" fill="none"
+        stroke="#1A1A1A" stroke-width="2.6" filter="url(#roughBig)"/>
+  <rect x="11" y="11" width="978" height="378" fill="none"
+        stroke="#1A1A1A" stroke-width="1" opacity="0.45" filter="url(#rough)"/>
+
+  <!-- ====== title (replace this) ====== -->
+  <g transform="translate(34, 44)">
+    <text x="0" y="0" font-size="26" font-weight="900" fill="#C04D3A" filter="url(#rough)">YOUR TITLE HERE</text>
+    <text x="280" y="0" font-size="16" fill="#1A1A1A" font-style="italic">— short tagline</text>
+  </g>
+
+  <!-- ====== example rubber stamp (rotate; delete if not needed) ====== -->
+  <g transform="translate(820, 50) rotate(-9)" filter="url(#roughBig)">
+    <rect x="-44" y="-14" width="88" height="28" fill="none" stroke="#C04D3A" stroke-width="2.4"/>
+    <text x="0" y="6" font-size="18" font-weight="900" fill="#C04D3A"
+          text-anchor="middle" letter-spacing="3">STAMP</text>
+  </g>
+
+  <!-- ====== example "YOU ARE HERE" pennant + today line ====== -->
+  <!-- Move the pennant to x = today's-pixel-position once you wire up dates. -->
+  <g transform="translate(500, 90)" filter="url(#rough)">
+    <polygon points="-30,-12 30,-12 30,2 4,2 0,8 -4,2 -30,2"
+             fill="#F5C84B" stroke="#1A1A1A" stroke-width="1.6"/>
+    <text x="0" y="-2" font-size="9" font-weight="900" fill="#C04D3A" text-anchor="middle">YOU ARE HERE</text>
+  </g>
+  <path d="M 500 100 Q 498 180 501 250 Q 499 320 500 360" stroke="#C04D3A"
+        stroke-width="2.4" fill="none" filter="url(#rough)"/>
+
+  <!-- ====== example: solid (past) vs dashed (future) bar ====== -->
+  <g filter="url(#rough)">
+    <rect x="80" y="180" width="240" height="20" fill="#C04D3A"
+          stroke="#1A1A1A" stroke-width="2"/>
+    <text x="200" y="194" font-size="10" font-weight="900" fill="#FBF5E4" text-anchor="middle">past = solid</text>
+  </g>
+  <g filter="url(#rough)">
+    <rect x="540" y="180" width="240" height="20" fill="#FBF5E4"
+          stroke="#1A1A1A" stroke-width="2" stroke-dasharray="5,4"/>
+    <text x="660" y="194" font-size="10" font-weight="900" fill="#1A1A1A" text-anchor="middle">future = dashed</text>
+  </g>
+
+  <!-- ====== example labeled charm group: PIN keypad ====== -->
+  <!-- Pattern: every meaningful unit is its own <g>, transformed into place,
+       with a comment header. Copy this group, change the transform's x/y,
+       update the label, and you have a new charm. The chart grows by
+       accretion — never redraw it. -->
+
+  <!-- charm: PIN keypad · example -->
+  <g transform="translate(200, 270)" filter="url(#roughTiny)">
+    <rect x="-12" y="-10" width="24" height="18" fill="#FBF5E4" stroke="#1A1A1A" stroke-width="1.2"/>
+    <circle cx="-6" cy="-4" r="1.6" fill="#1A1A1A"/>
+    <circle cx="0"  cy="-4" r="1.6" fill="#1A1A1A"/>
+    <circle cx="6"  cy="-4" r="1.6" fill="#1A1A1A"/>
+    <circle cx="-6" cy="2"  r="1.6" fill="#1A1A1A"/>
+    <text x="0" y="20" font-size="10" text-anchor="middle" fill="#6C6033">#73 PIN 2FA</text>
+  </g>
+
+  <!-- charm: tier chips · example -->
+  <g transform="translate(400, 270)" filter="url(#roughTiny)">
+    <rect x="-6" y="-6" width="12" height="6" rx="3" fill="#F5C84B" stroke="#1A1A1A" stroke-width="0.9"/>
+    <rect x="6" y="-3" width="12" height="6" rx="3" fill="#C04D3A" stroke="#1A1A1A" stroke-width="0.9"/>
+    <rect x="-6" y="3" width="12" height="6" rx="3" fill="#2D7A45" stroke="#1A1A1A" stroke-width="0.9"/>
+    <text x="0" y="20" font-size="10" text-anchor="middle" fill="#6C6033">tier-chip ACL</text>
+  </g>
+
+  <!-- charm: tent · example -->
+  <g transform="translate(600, 270)" filter="url(#rough)">
+    <polygon points="0,-12 -12,8 12,8" fill="#C04D3A" stroke="#1A1A1A" stroke-width="1.4"/>
+    <line x1="0" y1="-12" x2="0" y2="8" stroke="#1A1A1A" stroke-width="1"/>
+    <polygon points="-2,8 2,8 0,-4" fill="#1A1A1A" opacity="0.4"/>
+    <text x="0" y="20" font-size="10" text-anchor="middle" fill="#6C6033">EVENT</text>
+  </g>
+
+  <!-- charm: tiny ranger silhouette (corner marginalia) · example -->
+  <g transform="translate(960, 380)" filter="url(#rough)">
+    <circle cx="0" cy="-6" r="3" fill="#3D2317"/>
+    <rect x="-3" y="-3" width="6" height="6" fill="#C04D3A"/>
+    <rect x="-3" y="3" width="2.5" height="5" fill="#2C1810"/>
+    <rect x="0.5" y="3" width="2.5" height="5" fill="#2C1810"/>
+  </g>
+
+  <!-- ====== axis line + a couple of date ticks (delete or adapt) ====== -->
+  <line x1="60" y1="340" x2="940" y2="340" stroke="#1A1A1A" stroke-width="2" filter="url(#rough)"/>
+  <g font-size="10" fill="#1A1A1A" font-weight="700">
+    <g transform="translate(80, 340)"><line y2="6" stroke="#1A1A1A" stroke-width="1.5"/><text y="18" text-anchor="middle">start</text></g>
+    <g transform="translate(500, 340)"><line y2="6" stroke="#C04D3A" stroke-width="2"/><text y="18" text-anchor="middle" fill="#C04D3A">today</text></g>
+    <g transform="translate(920, 340)"><line y2="6" stroke="#1A1A1A" stroke-width="1.5"/><text y="18" text-anchor="middle">end</text></g>
+  </g>
+</svg>
